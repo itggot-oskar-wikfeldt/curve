@@ -20,11 +20,12 @@ public class Player extends GameObject {
 	private int leftBind;
 	private int rightBind;
 	private Color color;
+	private String name;
 	private List<Ellipse2D.Double> circles = new ArrayList<>();
 
-	public Player(String controls, String color) {
+	public Player(String name, String controls, String color) {
 		super();
-
+		this.name = name;
 		hitbox = new Ellipse2D.Double(0, 0, width, width);
 
 		if (controls == "arrows") {
@@ -50,11 +51,8 @@ public class Player extends GameObject {
 	private boolean dead = false;
 
 	public void kill() {
-		System.out.println("hello");
-		if (drawing && !dead) {
-			System.out.println("hello");
+		if (drawing && !dead)
 			dead = true;
-		}
 		
 	}
 
@@ -112,6 +110,10 @@ public class Player extends GameObject {
 	
 	public boolean getDead() {
 		return dead;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 }
