@@ -50,9 +50,10 @@ public class Player extends GameObject {
 	private boolean dead = false;
 
 	public void kill() {
-		if (drawing) {
+		System.out.println("hello");
+		if (drawing && !dead) {
+			System.out.println("hello");
 			dead = true;
-			vel = 0;
 		}
 		
 	}
@@ -65,7 +66,6 @@ public class Player extends GameObject {
 	private double gapStartTime;
 
 	public void tick() {
-		System.out.println(vel);
 		if (Keyboard.isKeyDown(leftBind))
 			angle -= turnSpeed;
 
@@ -79,8 +79,9 @@ public class Player extends GameObject {
 			drawing = false;
 		else
 			drawing = true;
-
-		move();
+		
+		if (!dead)
+			move();
 
 		if (drawing)
 			circles.add(new Ellipse2D.Double(x, y, width, width));

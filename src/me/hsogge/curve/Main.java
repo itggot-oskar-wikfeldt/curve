@@ -167,7 +167,6 @@ public class Main implements Runnable {
 
 	protected void update() {
 		world.tick();
-		System.out.println(tps);
 	}
 
 
