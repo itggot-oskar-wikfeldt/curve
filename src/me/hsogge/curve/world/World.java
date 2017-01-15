@@ -16,11 +16,13 @@ public class World {
 	List<Item> items = new ArrayList<>();
 	List<Player> alivePlayers = new ArrayList<>();
 	Rectangle worldBounds;
+	int numOfPlayers = 2;
 	double startTime = 0;
 
 	public World() {
-		players.add(new Player("Blue player", "arrows", "blue"));
-		players.add(new Player("Green player", "WASD", "green"));
+		for (int i = 0; i < numOfPlayers; i++) {
+			players.add(new Player("arrows", i));
+		}
 		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		newGame();
 	}
@@ -56,7 +58,6 @@ public class World {
 			player.init();
 		items.clear();
 		startTime = Main.getTimePassed();
-		System.out.println(startTime);
 		gameOver = false;
 		alivePlayers.clear();
 		alivePlayers.addAll(players);

@@ -24,26 +24,34 @@ public class Player extends GameObject {
 	private String name;
 	private List<Polygon> polygons = new ArrayList<>();
 
-	public Player(String name, String controls, String color) {
-		
-		this.name = name;
+	public Player(String controls, int playerIndex) {
 
-		if (controls == "arrows") {
+		if (playerIndex == 0) {
+
 			leftBind = KeyEvent.VK_LEFT;
 			rightBind = KeyEvent.VK_RIGHT;
-		} else if (controls == "WASD") {
+
+			color = Color.BLUE;
+			name = "Blue player";
+
+		} else if (playerIndex == 1) {
+
 			leftBind = KeyEvent.VK_A;
 			rightBind = KeyEvent.VK_D;
-		} else {
-			System.out.println("invalid control scheme");
-		}
 
-		if (color == "blue") {
-			this.color = Color.BLUE;
-		} else if (color == "green") {
-			this.color = Color.GREEN;
+			color = Color.GREEN;
+			name = "Green player";
+
+		} else if (playerIndex == 2) {
+
+			leftBind = KeyEvent.VK_N;
+			rightBind = KeyEvent.VK_M;
+
+			color = Color.RED;
+			name = "Red player";
+
 		} else {
-			System.out.println("invalid color");
+			System.out.println("too many players");
 		}
 
 		init();
@@ -78,6 +86,10 @@ public class Player extends GameObject {
 
 	private int ax, bx, cx, dx, ay, by, cy, dy, oldCx, oldDx, oldCy, oldDy;
 	private int oldTick;
+	
+	
+	int[] asd = {0, 0};
+	Polygon renderPolygon = new Polygon(asd, asd, 2);
 
 	private void placePolygon() {
 		double sinRotated = Math.sin(Math.toRadians(angle + 90));
@@ -111,6 +123,23 @@ public class Player extends GameObject {
 		int[] yPoints = { ay, by, dy, cy };
 
 		polygons.add(new Polygon(xPoints, yPoints, 4));
+		
+		int[] renderxPoints = {polygons.get(0).xpoints[2], polygons.get(0).ypoints[3]};
+		int[] renderyPoints = {polygons.get(0).ypoints[2], polygons.get(0).ypoints[3]};
+		
+		renderPolygon = new Polygon(renderxPoints, renderyPoints, 2);
+		
+		for (Polygon polygon : polygons) {
+			renderPolygon.addPoint(polygon.xpoints[3], polygon.ypoints[3]);
+			renderPolygon.addPoint(polygon.xpoints[0], polygon.ypoints[0]);
+		}
+		
+		for (int i = polygons.size(); i > 0; i--) {
+			System.out.println("hello");
+			Polygon polygon = polygons.get(i - 1);
+			renderPolygon.addPoint(polygon.xpoints[1], polygon.ypoints[1]);
+			renderPolygon.addPoint(polygon.xpoints[2], polygon.ypoints[2]);			
+		}
 	}
 
 	public void gap() {
@@ -120,36 +149,39 @@ public class Player extends GameObject {
 	public void stop() {
 		stop = true;
 	}
-	
+
 	public void fill() {
 		solid = true;
 	}
-	
+
 	public void go() {
 		stop = false;
 	}
 
-	private double gapStartTime;
+	private double gapStart;
 
 	private double sin;
 	private double cos;
 
 	public void tick() {
 
-		if (Keyboard.isKeyDown(leftBind))
-			angle -= turnSpeed;
+		if (!stop) {
+			if (Keyboard.isKeyDown(leftBind))
+				angle -= turnSpeed;
 
-		if (Keyboard.isKeyDown(rightBind))
-			angle += turnSpeed;
+			if (Keyboard.isKeyDown(rightBind))
+				angle += turnSpeed;
+		}
 
 		sin = Math.sin(Math.toRadians(angle));
 		cos = Math.cos(Math.toRadians(angle));
 
 		if ((int) (Math.random() * 2 * Main.getTickrate()) == 0)
-			gapStartTime = Main.getTimePassed();
+			gapStart = 0;
 
-		if (Main.getTimePassed() - gapStartTime < 0.3)
+		if (gapStart < 2 * width)
 			gap();
+		gapStart += vel;
 
 		if (!stop)
 			move();
@@ -166,16 +198,19 @@ public class Player extends GameObject {
 	}
 
 	public void render(Graphics2D g) {
-		
-		
-		
+
 		g.setColor(color);
 		if (stop)
-			g.drawLine((int) getCenterX(), (int) getCenterY(), (int) (getCenterX() + cos * 20), (int) (getCenterY() + sin * 20));
+			g.drawLine((int) getCenterX(), (int) getCenterY(), (int) (getCenterX() + cos * 20),
+					(int) (getCenterY() + sin * 20));
 		g.fill(hitbox);
-
+		
+		/*
 		for (Polygon polygon : polygons)
 			g.fillPolygon(polygon);
+		*/
+		
+		g.fillPolygon(renderPolygon);
 
 	}
 

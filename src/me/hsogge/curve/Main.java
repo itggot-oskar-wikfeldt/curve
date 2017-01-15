@@ -3,6 +3,7 @@ package me.hsogge.curve;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
@@ -89,12 +90,13 @@ public class Main implements Runnable {
 	private void resetGame() {
 		startTime = System.nanoTime();
 		timePassed = 0;
-		
+
 		world = new World();
 	}
-	
+
 	long startTime;
 	static int totalTicks;
+	boolean antialias;
 
 	public void run() {
 		final double UPDATE_INTERVAL = 1000000000 / TICKRATE;
@@ -120,12 +122,18 @@ public class Main implements Runnable {
 					System.exit(0);
 				}
 
+				if (Keyboard.isKeyDown(KeyEvent.VK_T)) {
+					antialias = true;
+				} else {
+					antialias = false;
+				}
+				
 				if (Keyboard.isKeyPressed(KeyEvent.VK_DELETE)) {
 					resetGame();
 				}
 
 				if (Keyboard.isKeyPressed(KeyEvent.VK_ENTER) && Keyboard.isKeyDown(KeyEvent.VK_ALT)) {
-					//toggleFullscreen();
+					// toggleFullscreen();
 				}
 
 				ticks++;
@@ -147,6 +155,10 @@ public class Main implements Runnable {
 	private void render() {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, width, height);
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		if (antialias)
+			g.setRenderingHints(rh);
 		render(g);
 		g.dispose();
 		bufferStrategy.show();
@@ -160,7 +172,6 @@ public class Main implements Runnable {
 	protected void render(Graphics2D g) {
 		world.render(g);
 	}
-	
 
 	public static int getTickrate() {
 		return TICKRATE;
@@ -181,7 +192,7 @@ public class Main implements Runnable {
 	public static Canvas getCanvas() {
 		return canvas;
 	}
-	
+
 	public static int getTotalTicks() {
 		return totalTicks;
 	}
