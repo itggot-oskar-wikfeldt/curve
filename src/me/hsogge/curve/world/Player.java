@@ -88,8 +88,8 @@ public class Player extends GameObject {
 	private int oldTick;
 	
 	
-	int[] asd = {0, 0};
-	Polygon renderPolygon = new Polygon(asd, asd, 2);
+	Polygon[] renderPolygons;
+	int renderPolygonIndex = 0;
 
 	private void placePolygon() {
 		double sinRotated = Math.sin(Math.toRadians(angle + 90));
@@ -124,10 +124,15 @@ public class Player extends GameObject {
 
 		polygons.add(new Polygon(xPoints, yPoints, 4));
 		
+		
+		
+
 		int[] renderxPoints = {polygons.get(0).xpoints[2], polygons.get(0).ypoints[3]};
 		int[] renderyPoints = {polygons.get(0).ypoints[2], polygons.get(0).ypoints[3]};
 		
-		renderPolygon = new Polygon(renderxPoints, renderyPoints, 2);
+		
+		
+		Polygon renderPolygon = new Polygon(renderxPoints, renderyPoints, 2);
 		
 		for (Polygon polygon : polygons) {
 			renderPolygon.addPoint(polygon.xpoints[3], polygon.ypoints[3]);
@@ -135,11 +140,13 @@ public class Player extends GameObject {
 		}
 		
 		for (int i = polygons.size(); i > 0; i--) {
-			System.out.println("hello");
 			Polygon polygon = polygons.get(i - 1);
 			renderPolygon.addPoint(polygon.xpoints[1], polygon.ypoints[1]);
 			renderPolygon.addPoint(polygon.xpoints[2], polygon.ypoints[2]);			
 		}
+		
+		renderPolygons[renderPolygonIndex]  = renderPolygon;
+	
 	}
 
 	public void gap() {
@@ -205,12 +212,15 @@ public class Player extends GameObject {
 					(int) (getCenterY() + sin * 20));
 		g.fill(hitbox);
 		
-		/*
-		for (Polygon polygon : polygons)
-			g.fillPolygon(polygon);
-		*/
 		
-		g.fillPolygon(renderPolygon);
+		for (Polygon polygon : renderPolygons) {
+
+			System.out.println("hello");
+			g.fillPolygon(polygon);
+			
+		}
+
+			
 
 	}
 
