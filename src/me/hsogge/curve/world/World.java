@@ -3,8 +3,8 @@ package me.hsogge.curve.world;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class World {
 	List<Player> players = new ArrayList<>();
 	List<Item> items = new ArrayList<>();
 	List<Player> alivePlayers = new ArrayList<>();
-	Rectangle worldBounds;
+	List<Rectangle> worldBounds = new ArrayList<>();
 	int numOfPlayers = 2;
 	double startTime = 0;
 
@@ -23,7 +23,10 @@ public class World {
 		for (int i = 0; i < numOfPlayers; i++) {
 			players.add(new Player("arrows", i));
 		}
-		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
+		worldBounds.add(new Rectangle(-32, 0, 32, Main.getCanvas().getHeight()));
+		worldBounds.add(new Rectangle(0, -32, Main.getCanvas().getWidth(), 32));
+		worldBounds.add(new Rectangle(Main.getCanvas().getWidth(), 0, 32, Main.getCanvas().getHeight()));
+		worldBounds.add(new Rectangle(0, Main.getCanvas().getHeight(), Main.getCanvas().getWidth(), 32));
 		newGame();
 	}
 
@@ -31,25 +34,28 @@ public class World {
 		for (Player player : players) {
 
 			for (int i = 0; i < player.getPolygons().size(); i++) {
-				Rectangle2D polygonBound = player.getPolygons().get(i).getBounds2D();
+
+				Polygon polygon = player.getPolygons().get(i);
 
 				// checking if the player in the loop is colliding
 				if (!player.getDead() && player.getPolygons().size() - i > 10)
-					if (player.getHitbox().intersects(polygonBound))
+					if (polygon.intersects(player.getHitbox().getFrame()))
 						player.kill();
 
 				// checking the other players
 				for (Player otherPlayer : players) {
 					if (otherPlayer.getDead() || otherPlayer == player)
 						continue;
-					if (otherPlayer.getHitbox().intersects(polygonBound))
+					if (polygon.intersects(otherPlayer.getHitbox().getFrame()))
 						otherPlayer.kill();
 				}
 
 			}
 
-			if (!player.getHitbox().intersects(worldBounds))
-				player.kill();
+			for (Rectangle rect : worldBounds)
+				if (player.getHitbox().intersects(rect))
+					player.kill();
+
 		}
 	}
 

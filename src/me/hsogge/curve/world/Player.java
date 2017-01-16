@@ -62,6 +62,7 @@ public class Player extends GameObject {
 		dead = false;
 
 		polygons.clear();
+		renderPolygons.clear();
 
 		setX(Math.random() * Main.getCanvas().getWidth());
 		setY(Math.random() * Main.getCanvas().getHeight());
@@ -86,10 +87,10 @@ public class Player extends GameObject {
 
 	private int ax, bx, cx, dx, ay, by, cy, dy, oldCx, oldDx, oldCy, oldDy;
 	private int oldTick;
-	
-	
-	Polygon[] renderPolygons;
-	int renderPolygonIndex = 0;
+
+	List<Polygon> renderPolygons = new ArrayList<>();
+
+	int firstPoly = 0;
 
 	private void placePolygon() {
 		double sinRotated = Math.sin(Math.toRadians(angle + 90));
@@ -105,6 +106,8 @@ public class Player extends GameObject {
 		bx = (int) Math.round(cosRotated * -width / 2 + getCenterX());
 		by = (int) Math.round(sinRotated * -width / 2 + getCenterY());
 
+		boolean newPoly = false;
+
 		if (Main.getTotalTicks() - 1 == oldTick) {
 			cx = oldCx;
 			cy = oldCy;
@@ -115,6 +118,8 @@ public class Player extends GameObject {
 			cy = ay;
 			dx = bx;
 			dy = by;
+			firstPoly = polygons.size();
+			newPoly = true;
 		}
 
 		oldTick = Main.getTotalTicks();
@@ -123,30 +128,30 @@ public class Player extends GameObject {
 		int[] yPoints = { ay, by, dy, cy };
 
 		polygons.add(new Polygon(xPoints, yPoints, 4));
-		
-		
-		
 
-		int[] renderxPoints = {polygons.get(0).xpoints[2], polygons.get(0).ypoints[3]};
-		int[] renderyPoints = {polygons.get(0).ypoints[2], polygons.get(0).ypoints[3]};
-		
-		
-		
-		Polygon renderPolygon = new Polygon(renderxPoints, renderyPoints, 2);
-		
-		for (Polygon polygon : polygons) {
-			renderPolygon.addPoint(polygon.xpoints[3], polygon.ypoints[3]);
-			renderPolygon.addPoint(polygon.xpoints[0], polygon.ypoints[0]);
+		if (solid) {
+			Polygon renderPolygon = new Polygon(
+					new int[] { polygons.get(firstPoly).xpoints[3], polygons.get(firstPoly).ypoints[2] },
+					new int[] { polygons.get(firstPoly).ypoints[3], polygons.get(firstPoly).ypoints[2] }, 2);
+
+			for (int i = firstPoly; i < polygons.size(); i++) {
+				Polygon polygon = polygons.get(i);
+				renderPolygon.addPoint(polygon.xpoints[3], polygon.ypoints[3]);
+				renderPolygon.addPoint(polygon.xpoints[0], polygon.ypoints[0]);
+			}
+
+			for (int i = polygons.size(); i > firstPoly; i--) {
+				Polygon polygon = polygons.get(i - 1);
+				renderPolygon.addPoint(polygon.xpoints[1], polygon.ypoints[1]);
+				renderPolygon.addPoint(polygon.xpoints[2], polygon.ypoints[2]);
+			}
+
+			if (newPoly)
+				renderPolygons.add(renderPolygon);
+			else
+				renderPolygons.set(renderPolygons.size() - 1, renderPolygon);
 		}
-		
-		for (int i = polygons.size(); i > 0; i--) {
-			Polygon polygon = polygons.get(i - 1);
-			renderPolygon.addPoint(polygon.xpoints[1], polygon.ypoints[1]);
-			renderPolygon.addPoint(polygon.xpoints[2], polygon.ypoints[2]);			
-		}
-		
-		renderPolygons[renderPolygonIndex]  = renderPolygon;
-	
+
 	}
 
 	public void gap() {
@@ -211,16 +216,11 @@ public class Player extends GameObject {
 			g.drawLine((int) getCenterX(), (int) getCenterY(), (int) (getCenterX() + cos * 20),
 					(int) (getCenterY() + sin * 20));
 		g.fill(hitbox);
-		
-		
+
 		for (Polygon polygon : renderPolygons) {
-
-			System.out.println("hello");
 			g.fillPolygon(polygon);
-			
-		}
 
-			
+		}
 
 	}
 

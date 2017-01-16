@@ -123,9 +123,9 @@ public class Main implements Runnable {
 				}
 
 				if (Keyboard.isKeyDown(KeyEvent.VK_T)) {
-					antialias = true;
-				} else {
 					antialias = false;
+				} else {
+					antialias = true;
 				}
 				
 				if (Keyboard.isKeyPressed(KeyEvent.VK_DELETE)) {
@@ -159,6 +159,7 @@ public class Main implements Runnable {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		if (antialias)
 			g.setRenderingHints(rh);
+		
 		render(g);
 		g.dispose();
 		bufferStrategy.show();
