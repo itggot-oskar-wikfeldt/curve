@@ -6,8 +6,13 @@ import me.hsogge.curve.Main;
 public class Item extends GameObject {
 
 	private String type;
+	
+	public void pickup(Player player) {
+		
+	}
 
 	public Item() {
+		
 		setX((int) (Math.random() * Main.getCanvas().getWidth()));
 		setY((int) (Math.random() * Main.getCanvas().getHeight()));
 		

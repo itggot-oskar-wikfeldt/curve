@@ -13,8 +13,8 @@ import me.hsogge.curve.input.Keyboard;
 
 public class Player extends GameObject {
 
-	private double vel = 1.5;
-	private double turnSpeed = 2.7;
+	private double vel = 1.2;
+	private double turnSpeed = 2.5;
 	private boolean solid = false;
 	private boolean stop = false;
 	private double angle = Math.random() * 360;
@@ -22,6 +22,7 @@ public class Player extends GameObject {
 	private int rightBind;
 	private Color color;
 	private String name;
+
 	private List<Polygon> polygons = new ArrayList<>();
 
 	public Player(String controls, int playerIndex) {
@@ -80,6 +81,12 @@ public class Player extends GameObject {
 			dead = true;
 	}
 
+	private int score = 0;
+
+	public void win() {
+		score += 1;
+	}
+
 	private void move() {
 		x += cos * vel;
 		y += sin * vel;
@@ -101,10 +108,10 @@ public class Player extends GameObject {
 		oldDx = bx;
 		oldDy = by;
 
-		ax = (int) Math.round(cosRotated * width / 2 + getCenterX());
-		ay = (int) Math.round(sinRotated * width / 2 + getCenterY());
-		bx = (int) Math.round(cosRotated * -width / 2 + getCenterX());
-		by = (int) Math.round(sinRotated * -width / 2 + getCenterY());
+		ax = (int) Math.round(cosRotated * width / 2 + x);
+		ay = (int) Math.round(sinRotated * width / 2 + y);
+		bx = (int) Math.round(cosRotated * -width / 2 + x);
+		by = (int) Math.round(sinRotated * -width / 2 + y);
 
 		boolean newPoly = false;
 
@@ -124,10 +131,7 @@ public class Player extends GameObject {
 
 		oldTick = Main.getTotalTicks();
 
-		int[] xPoints = { ax, bx, dx, cx };
-		int[] yPoints = { ay, by, dy, cy };
-
-		polygons.add(new Polygon(xPoints, yPoints, 4));
+		polygons.add(new Polygon(new int[] { ax, bx, dx, cx }, new int[] { ay, by, dy, cy }, 4));
 
 		if (solid) {
 			Polygon renderPolygon = new Polygon(
@@ -183,12 +187,17 @@ public class Player extends GameObject {
 
 			if (Keyboard.isKeyDown(rightBind))
 				angle += turnSpeed;
+
+			if (Keyboard.isKeyDown(KeyEvent.VK_B))
+				width = height = 16;
+			else
+				width = height = 8;
 		}
 
 		sin = Math.sin(Math.toRadians(angle));
 		cos = Math.cos(Math.toRadians(angle));
 
-		if ((int) (Math.random() * 2 * Main.getTickrate()) == 0)
+		if ((int) (Math.random() * 1.5 * Main.getTickrate()) == 0)
 			gapStart = 0;
 
 		if (gapStart < 2 * width)
@@ -202,6 +211,8 @@ public class Player extends GameObject {
 			placePolygon();
 		}
 
+		hitbox.width = hitbox.height = width;
+
 		hitbox.x = x;
 		hitbox.y = y;
 
@@ -213,14 +224,12 @@ public class Player extends GameObject {
 
 		g.setColor(color);
 		if (stop)
-			g.drawLine((int) getCenterX(), (int) getCenterY(), (int) (getCenterX() + cos * 20),
-					(int) (getCenterY() + sin * 20));
-		g.fill(hitbox);
+			g.drawLine((int) Math.round(x), (int) Math.round(y), (int) Math.round(x + cos * 20),
+					(int) Math.round(y + sin * 20));
+		g.fillOval((int) Math.round(x - width / 2), (int) Math.round(y - width / 2), width, width);
 
-		for (Polygon polygon : renderPolygons) {
+		for (Polygon polygon : renderPolygons)
 			g.fillPolygon(polygon);
-
-		}
 
 	}
 
@@ -238,6 +247,10 @@ public class Player extends GameObject {
 
 	public String getName() {
 		return name;
+	}
+
+	public int getScore() {
+		return score;
 	}
 
 }

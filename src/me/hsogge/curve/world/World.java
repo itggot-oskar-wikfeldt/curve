@@ -1,32 +1,31 @@
 package me.hsogge.curve.world;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.hsogge.curve.Main;
-import me.hsogge.curve.util.Util;
+import me.hsogge.curve.comp.HUD;
+import me.hsogge.curve.input.Keyboard;
 
 public class World {
 	List<Player> players = new ArrayList<>();
 	List<Item> items = new ArrayList<>();
 	List<Player> alivePlayers = new ArrayList<>();
-	List<Rectangle> worldBounds = new ArrayList<>();
+	Rectangle worldBounds;
 	int numOfPlayers = 2;
 	double startTime = 0;
+	HUD hud = new HUD(this);
 
 	public World() {
 		for (int i = 0; i < numOfPlayers; i++) {
 			players.add(new Player("arrows", i));
 		}
-		worldBounds.add(new Rectangle(-32, 0, 32, Main.getCanvas().getHeight()));
-		worldBounds.add(new Rectangle(0, -32, Main.getCanvas().getWidth(), 32));
-		worldBounds.add(new Rectangle(Main.getCanvas().getWidth(), 0, 32, Main.getCanvas().getHeight()));
-		worldBounds.add(new Rectangle(0, Main.getCanvas().getHeight(), Main.getCanvas().getWidth(), 32));
+		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		newGame();
 	}
 
@@ -38,7 +37,7 @@ public class World {
 				Polygon polygon = player.getPolygons().get(i);
 
 				// checking if the player in the loop is colliding
-				if (!player.getDead() && player.getPolygons().size() - i > 10)
+				if (!player.getDead() && player.getPolygons().size() - i > 20)
 					if (polygon.intersects(player.getHitbox().getFrame()))
 						player.kill();
 
@@ -52,9 +51,17 @@ public class World {
 
 			}
 
-			for (Rectangle rect : worldBounds)
-				if (player.getHitbox().intersects(rect))
-					player.kill();
+			if (player.getHitbox().getMinX() < worldBounds.getMinX()
+					|| player.getHitbox().getMaxX() > worldBounds.getMaxX()
+					|| player.getHitbox().getMinY() < worldBounds.getMinY()
+					|| player.getHitbox().getMaxY() > worldBounds.getMaxY())
+				player.kill();
+			
+			for (Item item : items) {
+				if (item.getHitbox().intersects(player.getHitbox().getFrame())) {
+					item.pickup(player);
+				}
+			}
 
 		}
 	}
@@ -63,6 +70,8 @@ public class World {
 		for (Player player : players)
 			player.init();
 		items.clear();
+		if (!(winner == null))
+			winner.win();
 		startTime = Main.getTimePassed();
 		gameOver = false;
 		alivePlayers.clear();
@@ -73,10 +82,13 @@ public class World {
 
 	boolean gameOver = false;
 	boolean tie;
-	String winner = "asd";
+	Player winner;
 	double gameOverTime = 0;
 
 	public void tick() {
+		
+		if (Keyboard.isKeyPressed(KeyEvent.VK_PLUS))
+			items.add(new Item());
 
 		for (Player player : players) {
 			if (Main.getTimePassed() - startTime < 6) {
@@ -106,7 +118,7 @@ public class World {
 				tie = true;
 			else {
 				tie = false;
-				winner = alivePlayers.get(0).getName();
+				winner = alivePlayers.get(0);
 			}
 		}
 
@@ -114,9 +126,6 @@ public class World {
 			newGame();
 
 	}
-
-	Font fontLarge = new Font("Arial", Font.PLAIN, 24);
-	Font fontSmall = new Font("Serif", Font.PLAIN, 12);
 
 	public void render(Graphics2D g) {
 		g.setColor(Color.BLACK);
@@ -129,13 +138,14 @@ public class World {
 			item.render(g);
 
 		g.setColor(Color.WHITE);
-		g.setFont(fontSmall);
-		g.drawString("del: reset game", 0, 10);
-		g.drawString("esc: quit", 0, 20);
-		if (gameOver) {
-			String string = tie ? "Tie!" : winner + " wins!";
-			Util.drawCenteredString(g, string, fontLarge, Main.getCanvas().getWidth() / 2,
-					Main.getCanvas().getHeight() / 2);
-		}
+		hud.render(g);
+		if (gameOver)
+			hud.drawResult(winner, tie, g);
+
 	}
+	
+	public List<Player> getPlayers() {
+		return players;
+	}
+
 }

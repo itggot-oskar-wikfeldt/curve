@@ -62,7 +62,7 @@ public class Main implements Runnable {
 		world = new World();
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(width, height + 30);
+		frame.setSize(width + 30, height + 30);
 		frame.setResizable(false);
 		frame.setLocationByPlatform(!fullscreen);
 		if (fullscreen)
@@ -127,7 +127,7 @@ public class Main implements Runnable {
 				} else {
 					antialias = true;
 				}
-				
+
 				if (Keyboard.isKeyPressed(KeyEvent.VK_DELETE)) {
 					resetGame();
 				}
@@ -155,11 +155,10 @@ public class Main implements Runnable {
 	private void render() {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, width, height);
-		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		if (antialias)
-			g.setRenderingHints(rh);
-		
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g.setRenderingHints(rh);
+
 		render(g);
 		g.dispose();
 		bufferStrategy.show();

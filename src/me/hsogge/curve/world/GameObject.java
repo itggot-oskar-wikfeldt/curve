@@ -22,11 +22,12 @@ public class GameObject {
 	}
 	
 	public void tick() {
-		
+		hitbox.x -= width/2;
+		hitbox.y -= height/2;
 	}
 	
 	public void render(Graphics2D g) {
-		g.drawImage(texture, (int) x, (int) y, width, height, null);
+		g.drawImage(texture, (int) (x-width/2), (int) (y-height/2), width, height, null);
 	}
 	
 	public void setTexture(BufferedImage texture) {
@@ -44,13 +45,7 @@ public class GameObject {
 	public void setY(double y) {
 		this.y = y;
 	}
-	
-	public double getCenterX() {
-		return x + width / 2;
-	}
-	public double getCenterY() {
-		return y + height / 2;
-	}
+
 
 	
 }
