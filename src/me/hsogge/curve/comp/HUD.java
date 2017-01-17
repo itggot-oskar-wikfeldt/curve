@@ -24,12 +24,14 @@ public class HUD {
 		Util.drawCenteredString(g, string, fontLarge, Main.getCanvas().getWidth() / 2,
 				Main.getCanvas().getHeight() / 2);
 	}
-
 	
 	public void render(Graphics2D g) {
 		g.setFont(fontSmall);
 		g.drawString("del: reset game", 0, 10);
 		g.drawString("esc: quit", 0, 20);
+		
+		g.drawString("TPS: " + Main.getTPS(), 300, 10);
+		g.drawString("FPS: " + Main.getFPS(), 300, 20);
 		
 		for (int i = 0; i < world.getPlayers().size(); i++) {
 			Player player = world.getPlayers().get(i);

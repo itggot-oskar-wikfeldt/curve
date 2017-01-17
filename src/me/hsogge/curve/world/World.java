@@ -6,28 +6,30 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import me.hsogge.curve.Main;
 import me.hsogge.curve.comp.HUD;
 import me.hsogge.curve.input.Keyboard;
-
 public class World {
 	List<Player> players = new ArrayList<>();
 	List<Item> items = new ArrayList<>();
 	List<Player> alivePlayers = new ArrayList<>();
 	Rectangle worldBounds;
-	int numOfPlayers = 2;
+	int numOfPlayers = 3;
 	double startTime = 0;
 	HUD hud = new HUD(this);
 
 	public World() {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("arrows", i));
+			players.add(new Player("arrows", i, this));
 		}
+	
 		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		newGame();
 	}
+	
 
 	private void checkCollision() {
 		for (Player player : players) {
@@ -76,6 +78,17 @@ public class World {
 		gameOver = false;
 		alivePlayers.clear();
 		alivePlayers.addAll(players);
+		Collections.sort(players);
+	}
+	
+	public void playerDied(Player player) {
+		for (Player loopPlayer : players) {
+			
+			if (loopPlayer.getDead()) {
+				continue;
+			}
+			loopPlayer.setScore(loopPlayer.getScore()+1);
+		}
 	}
 
 	public boolean stopPlayers = false;
@@ -91,22 +104,24 @@ public class World {
 			items.add(new Item());
 
 		for (Player player : players) {
-			if (Main.getTimePassed() - startTime < 6) {
-				player.gap();
-				if (Main.getTimePassed() - startTime < 3)
-					player.stop();
-				else
-					player.go();
-			} else
-				player.fill();
-
-			if (player.getDead())
-				alivePlayers.remove(player);
-			else {
+			if (player.getDead()) {
+				if (alivePlayers.contains(player)) {
+					alivePlayers.remove(player);
+					playerDied(player);
+				}
+			} else {
 				if (!alivePlayers.contains(player))
 					alivePlayers.add(player);
+				if (Main.getTimePassed() - startTime < 6) {
+					player.gap();
+					if (Main.getTimePassed() - startTime < 3)
+						player.stop();
+					else
+						player.go();
+				} else
+					player.fill();
 				player.tick();
-			}
+			}			
 		}
 
 		checkCollision();
@@ -124,6 +139,8 @@ public class World {
 
 		if (gameOver && Main.getTimePassed() - gameOverTime > 5)
 			newGame();
+		
+		
 
 	}
 

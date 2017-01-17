@@ -11,7 +11,7 @@ import java.util.List;
 import me.hsogge.curve.Main;
 import me.hsogge.curve.input.Keyboard;
 
-public class Player extends GameObject {
+public class Player extends GameObject implements Comparable<Player> {
 
 	private double vel = 1.2;
 	private double turnSpeed = 2.5;
@@ -22,11 +22,14 @@ public class Player extends GameObject {
 	private int rightBind;
 	private Color color;
 	private String name;
+	private World world;
 
 	private List<Polygon> polygons = new ArrayList<>();
 
-	public Player(String controls, int playerIndex) {
-
+	public Player(String controls, int playerIndex, World world) {
+		
+	
+		this.world = world;
 		if (playerIndex == 0) {
 
 			leftBind = KeyEvent.VK_LEFT;
@@ -84,8 +87,9 @@ public class Player extends GameObject {
 	private int score = 0;
 
 	public void win() {
-		score += 1;
+		//score += 1;
 	}
+	
 
 	private void move() {
 		x += cos * vel;
@@ -181,6 +185,7 @@ public class Player extends GameObject {
 
 	public void tick() {
 
+
 		if (!stop) {
 			if (Keyboard.isKeyDown(leftBind))
 				angle -= turnSpeed;
@@ -252,5 +257,26 @@ public class Player extends GameObject {
 	public int getScore() {
 		return score;
 	}
+	
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public void setVel(double vel) {
+		this.vel = vel;
+	}
+	
+	public void setTurnSpeed(double turnSpeed) {
+		this.turnSpeed = turnSpeed;
+	}
+	
+	@Override
+	public int compareTo(Player comparestu) {
+        int compareage=(comparestu).getScore();
+        return compareage-this.score;
+
+    }
+
+
 
 }
