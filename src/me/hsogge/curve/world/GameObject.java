@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 public class GameObject {
 	
-	BufferedImage texture;
+	protected BufferedImage texture;
 	protected double x = 0;
 	protected double y = 0;
 	protected int width;

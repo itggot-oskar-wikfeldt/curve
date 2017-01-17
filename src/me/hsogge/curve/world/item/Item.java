@@ -1,31 +1,27 @@
-package me.hsogge.curve.world;
+package me.hsogge.curve.world.item;
 
-import me.hsogge.curve.Assets;
+import java.awt.image.BufferedImage;
+
 import me.hsogge.curve.Main;
+import me.hsogge.curve.world.GameObject;
+import me.hsogge.curve.world.Player;
 
 public class Item extends GameObject {
 
 	private String type;
-	
-	public void pickup(Player player) {
-		
-	}
 
-	public Item() {
+	public Item(BufferedImage texture) {
 		
 		setX((int) (Math.random() * Main.getCanvas().getWidth()));
 		setY((int) (Math.random() * Main.getCanvas().getHeight()));
-		
-		int rand = (int) (Math.random() * 3);
 
-		if (rand == 0) {
-			type = "speed";
-			texture = Assets.SPEED;
-		} else {
-			texture = Assets.SPEED;
-		}
 		width = texture.getWidth();
 		height = texture.getHeight();
+		this.texture = texture;
+	}
+	
+	public void pickup(Player player) {
+		
 	}
 
 	public String getType() {

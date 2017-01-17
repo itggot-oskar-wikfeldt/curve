@@ -4,14 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import me.hsogge.curve.Main;
 import me.hsogge.curve.comp.HUD;
-import me.hsogge.curve.input.Keyboard;
+import me.hsogge.curve.world.item.Item;
 public class World {
 	List<Player> players = new ArrayList<>();
 	List<Item> items = new ArrayList<>();
@@ -23,7 +22,7 @@ public class World {
 
 	public World() {
 		for (int i = 0; i < numOfPlayers; i++) {
-			players.add(new Player("arrows", i, this));
+			players.add(new Player("arrows", i));
 		}
 	
 		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
@@ -99,9 +98,6 @@ public class World {
 	double gameOverTime = 0;
 
 	public void tick() {
-		
-		if (Keyboard.isKeyPressed(KeyEvent.VK_PLUS))
-			items.add(new Item());
 
 		for (Player player : players) {
 			if (player.getDead()) {

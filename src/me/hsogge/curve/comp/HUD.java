@@ -30,8 +30,8 @@ public class HUD {
 		g.drawString("del: reset game", 0, 10);
 		g.drawString("esc: quit", 0, 20);
 		
-		g.drawString("TPS: " + Main.getTPS(), 300, 10);
-		g.drawString("FPS: " + Main.getFPS(), 300, 20);
+		//g.drawString("TPS: " + Main.getTPS(), 300, 10);
+		//g.drawString("FPS: " + Main.getFPS(), 300, 20);
 		
 		for (int i = 0; i < world.getPlayers().size(); i++) {
 			Player player = world.getPlayers().get(i);

@@ -22,14 +22,10 @@ public class Player extends GameObject implements Comparable<Player> {
 	private int rightBind;
 	private Color color;
 	private String name;
-	private World world;
 
 	private List<Polygon> polygons = new ArrayList<>();
 
-	public Player(String controls, int playerIndex, World world) {
-		
-	
-		this.world = world;
+	public Player(String controls, int playerIndex) {
 		if (playerIndex == 0) {
 
 			leftBind = KeyEvent.VK_LEFT;
