@@ -16,7 +16,7 @@ public class World {
 	List<Item> items = new ArrayList<>();
 	List<Player> alivePlayers = new ArrayList<>();
 	Rectangle worldBounds;
-	int numOfPlayers = 3;
+	int numOfPlayers = 2;
 	double startTime = 0;
 	HUD hud = new HUD(this);
 
