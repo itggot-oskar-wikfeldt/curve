@@ -11,6 +11,7 @@ import java.util.List;
 import me.hsogge.curve.Main;
 import me.hsogge.curve.comp.HUD;
 import me.hsogge.curve.world.item.Item;
+import me.hsogge.curve.world.item.Speed;
 public class World {
 	List<Player> players = new ArrayList<>();
 	List<Item> items = new ArrayList<>();
@@ -24,6 +25,8 @@ public class World {
 		for (int i = 0; i < numOfPlayers; i++) {
 			players.add(new Player("arrows", i));
 		}
+		
+		items.add(new Speed(this));
 	
 		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		newGame();
@@ -121,6 +124,14 @@ public class World {
 		}
 
 		checkCollision();
+		for (Player player : alivePlayers) {
+			for (Item item : items) {
+				if (item.getHitbox().intersects(player.getHitbox().getFrame())) {
+					item.pickup(player);
+					items.remove(item);
+				}	
+			}
+		}
 
 		if (alivePlayers.size() <= 1 && !gameOver) {
 			gameOverTime = Main.getTimePassed();

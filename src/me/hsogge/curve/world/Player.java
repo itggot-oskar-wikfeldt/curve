@@ -262,6 +262,10 @@ public class Player extends GameObject implements Comparable<Player> {
 		this.vel = vel;
 	}
 	
+	public double getVel() {
+		return vel;
+	}
+	
 	public void setTurnSpeed(double turnSpeed) {
 		this.turnSpeed = turnSpeed;
 	}
