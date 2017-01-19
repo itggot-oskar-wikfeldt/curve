@@ -26,11 +26,13 @@ public class World {
 			players.add(new Player("arrows", i));
 		}
 		
-		items.add(new Speed(this));
+
 	
 		worldBounds = new Rectangle(0, 0, Main.getCanvas().getWidth(), Main.getCanvas().getHeight());
 		newGame();
+		items.add(new Speed(this));
 	}
+	
 	
 
 	private void checkCollision() {
@@ -128,10 +130,13 @@ public class World {
 			for (Item item : items) {
 				if (item.getHitbox().intersects(player.getHitbox().getFrame())) {
 					item.pickup(player);
-					items.remove(item);
+					//items.remove(item);
 				}	
 			}
 		}
+		
+		for (Item item : items) 
+			item.tick();
 
 		if (alivePlayers.size() <= 1 && !gameOver) {
 			gameOverTime = Main.getTimePassed();
@@ -146,6 +151,8 @@ public class World {
 
 		if (gameOver && Main.getTimePassed() - gameOverTime > 5)
 			newGame();
+		
+		System.out.println(items.size());
 		
 		
 

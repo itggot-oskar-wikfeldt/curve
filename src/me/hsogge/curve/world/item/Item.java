@@ -25,5 +25,7 @@ public class Item extends GameObject {
 	public void pickup(Player player) {
 		
 	}
+	
+	
 
 }
