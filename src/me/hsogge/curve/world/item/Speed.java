@@ -6,8 +6,13 @@ import me.hsogge.curve.world.World;
 
 public class Speed extends Item {
 
+<<<<<<< HEAD
 	public Speed(World world) {
 		super(Assets.SPEED, world);
+=======
+	public Speed() {
+		super(Assets.SPEED);
+>>>>>>> origin/master
 		// TODO Auto-generated constructor stub
 	}
 	
