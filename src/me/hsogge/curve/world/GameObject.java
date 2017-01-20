@@ -22,8 +22,6 @@ public class GameObject {
 	}
 	
 	public void tick() {
-		hitbox.x -= width/2;
-		hitbox.y -= height/2;
 	}
 	
 	public void render(Graphics2D g) {

@@ -1,5 +1,6 @@
 package me.hsogge.curve.world.item;
 
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
 import me.hsogge.curve.Main;
@@ -20,6 +21,8 @@ public class Item extends GameObject {
 		height = texture.getHeight();
 		this.texture = texture;
 		this.world = world;
+		
+		hitbox = new Ellipse2D.Double(x-width/2, y-height/2, width, height);
 	}
 	
 	public void pickup(Player player) {

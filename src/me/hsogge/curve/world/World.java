@@ -17,7 +17,7 @@ public class World {
 	List<Item> items = new ArrayList<>();
 	List<Player> alivePlayers = new ArrayList<>();
 	Rectangle worldBounds;
-	int numOfPlayers = 2;
+	int numOfPlayers = 3;
 	double startTime = 0;
 	HUD hud = new HUD(this);
 
@@ -62,12 +62,14 @@ public class World {
 					|| player.getHitbox().getMinY() < worldBounds.getMinY()
 					|| player.getHitbox().getMaxY() > worldBounds.getMaxY())
 				player.kill();
+			System.out.println(items.size());
 			
 			for (Item item : items) {
 				if (item.getHitbox().intersects(player.getHitbox().getFrame())) {
 					item.pickup(player);
 				}
 			}
+			System.out.println("helklo");
 
 		}
 	}

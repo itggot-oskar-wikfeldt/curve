@@ -214,8 +214,8 @@ public class Player extends GameObject implements Comparable<Player> {
 
 		hitbox.width = hitbox.height = width;
 
-		hitbox.x = x;
-		hitbox.y = y;
+		hitbox.x = x-width/2;
+		hitbox.y = y-height/2;
 
 		super.tick();
 
